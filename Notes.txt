@@ -1,0 +1,292 @@
+bpmn location to deploy
+configuration/resources
+
+playlist
+https://youtu.be/l-sCUKQZ44s?si=OUl9hZj5tRu0lwW8
+
+==>> SimpleDemo
+
+remote architypes
+User guide - Process application
+url mentioned
+https://artifacts.camunda.com/artifactory/camunda-bpm/
+
+Add url in eclipse prefernces
+Preferences -> Maven -> Archetypes -> Add Remote Catalog
+
+Bpmn edit
+
+Class
+CheckWeatherDelegate
+add interface JavaDelegate
+
+Go to file expand & copy qualified name
+com.camunda.demo.SimpleDemo.CheckWeatherDelegate
+
+and paste in camunda task-> properties-> implemetaion -> java class
+
+Bpmn edit
+gate
+yes arrow
+condition -> expression #{weatherOk}
+no arrow
+condition -> expression #{not weatherOk}
+
+copy qualified name for Print task
+com.camunda.demo.SimpleDemo.LoggerDelegate
+
+Start the camunda
+
+Build the java project 
+Run as Maven install
+JRE not JDK error
+Preference -> installed JREs -> add/select JDK
+
+in Targets it will generate war file
+
+copy war to tomcat deloyment folder
+
+
+--------
+
+server.xml
+Listener
+<Listener className="org.camunda.bpm.container.impl.tomcat.TomcatBpmPlatformBootstrap" />
+
+Database
+<Resource name="jdbc/ProcessEngine"
+              auth="Container"
+              type="javax.sql.DataSource" 
+              factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+              uniqueResourceName="process-engine"
+              driverClassName="org.h2.Driver" 
+              url="jdbc:h2:./camunda-h2-dbs/process-engine;TRACE_LEVEL_FILE=0;DB_CLOSE_ON_EXIT=FALSE"
+              defaultTransactionIsolation="READ_COMMITTED"
+              username="sa"  
+              password="sa"
+              maxActive="20"
+              minIdle="5"
+              maxIdle="20" />
+
+Services
+
+
+    <Resource name="global/camunda-bpm-platform/process-engine/ProcessEngineService!org.camunda.bpm.ProcessEngineService" auth="Container"
+              type="org.camunda.bpm.ProcessEngineService"
+              description="Camunda Platform Process Engine Service"
+              factory="org.camunda.bpm.container.impl.jndi.ProcessEngineServiceObjectFactory" />
+              
+    <Resource name="global/camunda-bpm-platform/process-engine/ProcessApplicationService!org.camunda.bpm.ProcessApplicationService" auth="Container"
+              type="org.camunda.bpm.ProcessApplicationService"
+              description="Camunda Platform Process Application Service"
+              factory="org.camunda.bpm.container.impl.jndi.ProcessApplicationServiceObjectFactory" />
+
+Copy lib jars to tomcat lib
+
+Add bpm-platform.xml
+
+Download the war file and place in webapps
+https://artifacts.camunda.com/ui/native/camunda-bpm/org/camunda/bpm/webapp/camunda-webapp-tomcat/
+
+------
+We have to be careful with versions
+Java
+Camunda platform distribution
+Camunda platform war
+Tomcat version
+Libraries
+
+------
+==>> RomeSubscriberTopicsDemo
+
+Endpoint configuration
+http://localhost:8080/engine-rest/deployment/create
+
+jsWorker
+DecideOnExpansionWorker.js
+
+https://github.com/camunda/camunda-external-task-client-js
+
+copy code
+change the topic DecideOnExpansion
+
+write logic
+import variables & copy proccessVariables.set code
+
+npm install -s camunda-external-task-client-js
+
+run worker
+node .\DecideOnExpansionWorker.js
+o/p
+✓ subscribed to topic DecideOnExpansion
+✓ completed task a6625f52-8ca2-11ef-aab5-204747c687e3
+
+InvadeGaul
+Create a maven project
+
+https://github.com/camunda/camunda-external-task-client-java
+new
+https://github.com/camunda/camunda-bpm-platform/tree/master/clients/java
+
+Quickstarts - Executable Process - copy dependencies
+<dependencies>
+		<dependency>
+			<groupId>org.camunda.bpm</groupId>
+			<artifactId>camunda-external-task-client</artifactId>
+			<version>${camunda.external-task-client.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.36</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<version>4.0.2</version>
+		</dependency>
+	</dependencies>
+
+Add version and maven properties
+<properties>
+  	<maven.compiler.source>1.8</maven.compiler.source>
+  	<maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+<version>1.2.0-alpha1</version>
+
+package: com.camunda.tutorial
+class: InvadeWorker
+
+copy the ChargeCardWorker imports and body
+java 8 issue
+Project properties -> compiler settings
+use complaince to java 1.8
+
+name changes
+maven install
+run as java application
+
+blog.camunda.org
+forum.camunda.org
+
+------
+==>> REST API
+https://docs.camunda.org/manual/7.22/reference/rest/
+
+Deploy
+POST
+localhost:8080/engine-rest/deployment/create
+Content-Type: multipart/form-data
+Body: form-data
+upload: Munster.bpmn
+
+Response:
+{
+    "links": [
+        {
+            "method": "GET",
+            "href": "http://localhost:8080/engine-rest/deployment/e47282ce-8d4e-11ef-a005-204747c687e3",
+            "rel": "self"
+        }
+    ],
+    "id": "e47282ce-8d4e-11ef-a005-204747c687e3",
+    "name": null,
+    "source": null,
+    "deploymentTime": "2024-10-18T18:15:45.145+0530",
+    "tenantId": null,
+    "deployedProcessDefinitions": {
+        "WatchMunster:1:e47c94f0-8d4e-11ef-a005-204747c687e3": {
+            "id": "WatchMunster:1:e47c94f0-8d4e-11ef-a005-204747c687e3",
+            "key": "WatchMunster",
+            "category": "http://bpmn.io/schema/bpmn",
+            "description": null,
+            "name": "Watch Munster",
+            "version": 1,
+            "resource": "Munster.bpmn",
+            "deploymentId": "e47282ce-8d4e-11ef-a005-204747c687e3",
+            "diagram": null,
+            "suspended": false,
+            "tenantId": null,
+            "versionTag": null,
+            "historyTimeToLive": 0,
+            "startableInTasklist": true
+        }
+    },
+    "deployedCaseDefinitions": null,
+    "deployedDecisionDefinitions": null,
+    "deployedDecisionRequirementsDefinitions": null
+}
+
+start instance
+POST
+localhost:8080/engine-rest/process-definition/key/WatchMunster/start
+Content-Type: application/json
+Body:json
+{}
+
+Response:
+{
+    "links": [
+        {
+            "method": "GET",
+            "href": "http://localhost:8080/engine-rest/process-instance/4e599b21-8d50-11ef-a005-204747c687e3",
+            "rel": "self"
+        }
+    ],
+    "id": "4e599b21-8d50-11ef-a005-204747c687e3",
+    "definitionId": "WatchMunster:1:e47c94f0-8d4e-11ef-a005-204747c687e3",
+    "businessKey": null,
+    "caseInstanceId": null,
+    "ended": false,
+    "suspended": false,
+    "tenantId": null
+}
+
+Find specific task
+GET
+localhost:8080/engine-rest/task?processDefinitionKey=WatchMunster
+Response:
+[
+    {
+        "id": "4e63fb64-8d50-11ef-a005-204747c687e3",
+        "name": "Pick a Team",
+        "assignee": null,
+        "created": "2024-10-18T18:25:52.385+0530",
+        "due": null,
+        "followUp": null,
+        "lastUpdated": null,
+        "delegationState": null,
+        "description": null,
+        "executionId": "4e599b21-8d50-11ef-a005-204747c687e3",
+        "owner": null,
+        "parentTaskId": null,
+        "priority": 50,
+        "processDefinitionId": "WatchMunster:1:e47c94f0-8d4e-11ef-a005-204747c687e3",
+        "processInstanceId": "4e599b21-8d50-11ef-a005-204747c687e3",
+        "taskDefinitionKey": "Activity_0twtey0",
+        "caseExecutionId": null,
+        "caseInstanceId": null,
+        "caseDefinitionId": null,
+        "suspended": false,
+        "formKey": null,
+        "camundaFormRef": null,
+        "tenantId": null,
+        "taskState": "Created"
+    }
+]
+
+Complete task
+POST
+localhost:8080/engine-rest/task/4e63fb64-8d50-11ef-a005-204747c687e3/complete
+Content-Type: application/json
+Body:
+{
+  "variables": {
+    "teamName": {
+      "value": "Preussen Munster"
+    }
+  }
+}
+
+Response status:204
