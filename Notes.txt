@@ -290,3 +290,72 @@ Body:
 }
 
 Response status:204
+
+=====> Advanced BPMN Symbols and More
+(In SimpleDemo Project only)
+
+Call Activity - call another sub process
+Call Activity type= BPMN
+Celled Element=SimpleDemo
+Binding=latest
+Business key=ticked
+Variables In & Out Mapping propagation ALL
+
+Event based gateway like XOR gateway
+waits for one of two or more events that may occur.
+one the the events happens, the process will continue in that direction.
+
+Sub Process
+
+Message Event
+Message, 
+Message Name: UsidorAndChuntArriveMessage
+
+
+Error End Event
+Error
+Error Name: PodcastCancelled
+Error code: PodcastCancelled
+
+Error Boundary event
+to catch error event
+
+Event Sub Process
+
+Conditional start event
+
+Note: Green items are executables
+
+Timer
+Timer Definition Type: Cycle
+Timer Definition: R/PT20M
+R repeat
+PT Period of time
+20M 20 minutes
+
+As long as token active at the task, it will generate a token evry 20 minutes. 
+
+Timer event
+Duration: PT30M
+
+Record Podcast - Service task - Java class 
+com.camunda.demo.SimpleDemo.LoggerDelegate
+
+Process
+Id=Hello
+Name=Hello
+
+Place bpmn in resoures folder & Maven Install
+
+Message event
+POST
+http://localhost:8080/engine-rest/message
+Content-Type: application/json
+{
+"messageName":"UsidorAndChuntArriveMessage",
+"businessKey":"14"
+}
+
+Note
+Book - Real-Life BPMN 
+
