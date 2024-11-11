@@ -359,3 +359,104 @@ Content-Type: application/json
 Note
 Book - Real-Life BPMN 
 
+==> How to Create DMN Models and Combine Them with BPMN
+
+Decision Requirements Diagram (DRD)
+
+Input & outputs
+Hit policy 
+Unique - only one rule matches
+First - whichever rule matches it goes with that one
+
+Decide on Beverage
+name, timeOfDay -> drink 
+
+To use DMN directly uses id DecideOnBeverage
+localhost:8080/engine-rest/decision-definition/key/DecideOnBeverage/evaluate
+Content-Type: application/json
+Body
+{
+  "variables": {
+    "name": { "value": "Dale Cooper", "type":"String"},
+    "timeOfDay": { "value": "Morning", "type":"String"}
+  }
+}
+
+Response
+[
+    {
+        "drink": {
+            "type": "String",
+            "value": "Damn Fine Coffee",
+            "valueInfo": {}
+        }
+    }
+]
+
+BPMN using DMN uses Decision Ref as DecideOnBeverage
+Binding - latest
+Result variable - drink
+Map Decision result - singleEntry
+
+New DRD - Decide on time of the day
+Hour -> timeOfDay
+
+==> Messaging with BPMN (Tried, facing issue)
+... Archetype-Servlet-war
+BpmnCommunication
+
+tDog.bpmn
+process.bpmn
+
+POST
+localhost:8080/engine-rest/message
+Content-Type: application/json
+Body:json
+{}
+
+Response:
+
+Form task: Answer the question
+variable: answer
+Million miles away, that's why it looks so small
+
+POST
+localhost:8080/engine-rest/message
+body:
+{
+  "messageName": "QuestionEdited",
+  "businessKey": "1",
+  "processVariables": {
+    "question": {
+      "value": "How far away is the Sun",
+      "type": "String"
+    }
+  }
+}
+
+QuestionCreated 
+2
+Why will camunda not start
+3
+How do timer events work
+4
+What is the capital of Germany
+
+NaillHasNoIdea
+2
+
+Comment the test assert statement as giving error.
+
+POST
+localhost:8080/engine-rest/signal
+body:
+{
+  "name": "ImportantWork",
+  "variables": {
+    "newTimePeriodInMonth": {
+      "value": 24
+    }
+  }
+}
+
+ 
